@@ -19,12 +19,13 @@ class Database():
         db.reference("drinkers").listen(self.drinkers_callback)
 
     def drinkers_callback(self, value):
-        print(value.event_type)
-        if value.event_type == "patch":
+        print(value.data)
+        if value.event_type == "patch" or type(value.data) == type(False) or list(value.data.keys())[0] == "isActive":
             data = db.reference("drinkers").get();
             self.process_drinkers(data)
         else:
             self.process_drinkers(value.data)
+        print("Drinkers Updated")
 
     def process_drinkers(self, data):
         drinkers = []

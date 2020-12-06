@@ -13,15 +13,21 @@ kegs = [{
 
 db = Database()
 
-while True:
-    currentTime = int(time.time() * FlowMeter.MS_IN_A_SECOND)
-
-    for keg in kegs:
-        meter = keg["meter"]
-        if meter.thisPour >= .05:
-            if currentTime - meter.lastClick < 2000:
-                print("Pouring")
-            else:
-                print("Pour finished: ", meter.thisPour, " liters")
-                meter.resetPour()
+print("sleep")
+for i in range(5000000):
     continue
+print("awake")
+db.activate_next_drinker()
+
+# while True:
+#     currentTime = int(time.time() * FlowMeter.MS_IN_A_SECOND)
+
+#     for keg in kegs:
+#         meter = keg["meter"]
+#         if meter.thisPour >= .05:
+#             if currentTime - meter.lastClick < 2000:
+#                 print("Pouring")
+#             else:
+#                 print("Pour finished: ", meter.thisPour, " liters")
+#                 meter.resetPour()
+#     continue

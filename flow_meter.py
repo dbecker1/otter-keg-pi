@@ -28,7 +28,7 @@ class FlowMeter():
     self.pin = pin
 
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.add_event_detect(13, GPIO.RISING, callback=self.tick, bouncetime=20)
+    GPIO.add_event_detect(pin, GPIO.RISING, callback=self.tick, bouncetime=20)
 
     print("Flow meter initialized on pin ", pin)
 

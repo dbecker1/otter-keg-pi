@@ -5,6 +5,9 @@ import os
 
 class Database():
     drinkers = []
+    kegs = []
+    config = {}
+
     def __init__(self):
         creds_location = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 
@@ -14,20 +17,14 @@ class Database():
             'databaseURL': 'https://otter-keg.firebaseio.com/'
         })
         self._init_drinkers_callback()
+        self._init_kegs_callback()
+        self.config = db.reference("config").get();
 
     def _init_drinkers_callback(self):
-        db.reference("drinkers").listen(self.drinkers_callback)
+        db.reference("drinkers").listen(self.load_drinkers)
 
-    def drinkers_callback(self, value):
-        print(value.data)
-        if value.event_type == "patch" or type(value.data) == type(False) or list(value.data.keys())[0] == "isActive":
-            data = db.reference("drinkers").get();
-            self.process_drinkers(data)
-        else:
-            self.process_drinkers(value.data)
-        print("Drinkers Updated")
-
-    def process_drinkers(self, data):
+    def load_drinkers(self, value):
+        data = db.reference("drinkers").get();
         drinkers = []
         for drinkerId in data:
             drinker = data[drinkerId]
@@ -35,6 +32,7 @@ class Database():
             drinkers.append(drinker)
         drinkers.sort(key=lambda x: x["name"])
         self.drinkers = drinkers
+        print("Drinkers Updated")
 
     def get_active_drinker(self):
         active_drinkers = [drinker for drinker in self.drinkers if drinker["isActive"]]
@@ -53,3 +51,16 @@ class Database():
                 next_drinker = self.drinkers[next_index]
                 db.reference("drinkers/" + drinker["id"]).update({"isActive": False})
                 db.reference("drinkers/" + next_drinker["id"]).update({"isActive": True})
+
+    def _init_kegs_callback(self):
+        db.reference("kegs").listen(self.load_kegs)
+
+    def load_kegs(self, value):
+        data = db.reference("kegs").order_by_child("isActive").equal_to(True).get()
+        kegs = []
+        for kegId in data:
+            keg = data[kegId]
+            keg["id"] = kegId
+            kegs.append(keg)
+        self.kegs = kegs
+        print("Kegs Updated")

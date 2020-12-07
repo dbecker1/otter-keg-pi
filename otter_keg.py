@@ -6,12 +6,32 @@ from database import *
 
 GPIO.setmode(GPIO.BCM)
 
-kegs = [{
-    "meter": FlowMeter(13),
-    "name": "Left Beer"
-}]
-
 db = Database()
+
+while db.drinkers == [] or db.kegs == []:
+    print("Waiting for init...")
+
+kegs = []
+
+# future state: call this when kegs are changed 
+def init_kegs():
+    global kegs 
+    kegs = []
+    for rawKeg in db.kegs:
+        keg = {
+            "id": rawKeg["id"],
+            "position": rawKeg["position"],
+            "pin": db.config[rawKeg["position"] + "Pin"]
+        }
+        pin_key = rawKeg["position"] + "Pin"
+        if pin_key in db.config:
+            pin = db.config[pin_key]
+            keg["pin"] = pin
+            keg["meter"] = FlowMeter(pin)
+        kegs.append(keg)
+    print("Kegs updated. Current value: ", kegs)
+
+init_kegs()
 
 while True:
     currentTime = int(time.time() * FlowMeter.MS_IN_A_SECOND)

@@ -18,13 +18,13 @@ class Database():
         })
         self._init_drinkers_callback()
         self._init_kegs_callback()
-        self.config = db.reference("config").get();
+        self.config = db.reference("config").get()
 
     def _init_drinkers_callback(self):
         db.reference("drinkers").listen(self.load_drinkers)
 
     def load_drinkers(self, value):
-        data = db.reference("drinkers").get();
+        data = db.reference("drinkers").get()
         drinkers = []
         for drinkerId in data:
             drinker = data[drinkerId]
@@ -64,3 +64,11 @@ class Database():
             kegs.append(keg)
         self.kegs = kegs
         print("Kegs Updated")
+
+    def create_pour(self, pour):
+        ref = db.reference("pours").push()
+        ref.set(pour)
+        key = ref.key
+        print("Creating new pour with key ", key)
+        print(pour)
+        return ref.key

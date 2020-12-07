@@ -1,4 +1,5 @@
 import time
+import datetime
 import os
 import RPi.GPIO as GPIO
 from flow_meter import *
@@ -21,7 +22,8 @@ def init_kegs():
         keg = {
             "id": rawKeg["id"],
             "position": rawKeg["position"],
-            "pin": db.config[rawKeg["position"] + "Pin"]
+            "pin": db.config[rawKeg["position"] + "Pin"],
+            "pour_id": None
         }
         pin_key = rawKeg["position"] + "Pin"
         if pin_key in db.config:
@@ -40,6 +42,16 @@ while True:
         meter = keg["meter"]
         if meter.thisPour >= .05:
             if currentTime - meter.lastClick < 2000:
+                pour_id = keg["pour_id"]
+                if pour_id is None:
+                    pour = {
+                        "keg_id": keg["id"],
+                        "drinker_id": db.get_active_drinker()["id"],
+                        "current": True,
+                        "amount": meter.thisPour,
+                        "start": str(datetime.datetime.now().isoformat())
+                    }
+                    keg["pour_id"] = db.create_pour(pour)
                 print("Pouring")
             else:
                 print("Pour finished: ", meter.thisPour, " liters")

@@ -15,8 +15,9 @@ class FlowMeter():
   thisPour = 0.0 # in Liters
   totalPour = 0.0 # in Liters
   pin = 0
+  logger = None
 
-  def __init__(self, pin):
+  def __init__(self, pin, logger):
     self.clicks = 0
     self.lastClick = int(time.time() * FlowMeter.MS_IN_A_SECOND)
     self.clickDelta = 0
@@ -26,13 +27,15 @@ class FlowMeter():
     self.totalPour = 0.0
     self.enabled = True
     self.pin = pin
+    self.logger = logger
 
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.add_event_detect(pin, GPIO.RISING, callback=self.tick, bouncetime=20)
 
-    print("Flow meter initialized on pin ", pin)
+    self.logger.info("Flow meter initialized on pin {}".format(pin))
 
   def tick(self, channel):
+    self.logger.debug("Flow meter tick")
     if not self.enabled:
         return
     currentTime = int(time.time() * FlowMeter.MS_IN_A_SECOND)

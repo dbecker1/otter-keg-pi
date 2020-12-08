@@ -8,8 +8,10 @@ class Database():
     drinkers = []
     kegs = []
     config = {}
+    logger = None
 
-    def __init__(self):
+    def __init__(self, logger):
+        self.logger = logger
         creds_location = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 
         cred = credentials.Certificate(creds_location)
@@ -33,7 +35,7 @@ class Database():
             drinkers.append(drinker)
         drinkers.sort(key=lambda x: x["name"])
         self.drinkers = drinkers
-        print("Drinkers Updated")
+        self.logger.debug("Drinkers Updated: {}".format(drinkers))
 
     def get_active_drinker(self):
         active_drinkers = [drinker for drinker in self.drinkers if drinker["isActive"]]
@@ -64,7 +66,7 @@ class Database():
             keg["id"] = kegId
             kegs.append(keg)
         self.kegs = kegs
-        print("Kegs Updated")
+        self.logger.debug("Kegs Updated: {}".format(kegs))
 
     def create_pour(self, pour):
         ref = db.reference("pours").push()

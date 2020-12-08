@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import os
+import datetime
 
 class Database():
     drinkers = []
@@ -68,7 +69,13 @@ class Database():
     def create_pour(self, pour):
         ref = db.reference("pours").push()
         ref.set(pour)
-        key = ref.key
-        print("Creating new pour with key ", key)
-        print(pour)
         return ref.key
+
+    def update_pour(self, pour_id, new_value):
+        db.reference("pours/" + pour_id).update({
+            "amount": new_value,
+            "last_update": str(datetime.datetime.now().isoformat())
+        })
+
+    def finish_pour(self, pour_id):
+        db.reference("pours/" + pour_id).update({"isCurrent": False})

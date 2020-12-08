@@ -40,20 +40,30 @@ while True:
 
     for keg in kegs:
         meter = keg["meter"]
-        if meter.thisPour >= .05:
+        if meter.thisPour >= .02:
+            pour_id = keg["pour_id"]
             if currentTime - meter.lastClick < 2000:
-                pour_id = keg["pour_id"]
                 if pour_id is None:
                     pour = {
                         "keg_id": keg["id"],
                         "drinker_id": db.get_active_drinker()["id"],
-                        "current": True,
-                        "amount": meter.thisPour,
-                        "start": str(datetime.datetime.now().isoformat())
+                        "isCurrent": True,
+                        "amount": round(meter.thisPour, 2),
+                        "start": str(datetime.datetime.now().isoformat()),
+                        "last_update": str(datetime.datetime.now().isoformat())
                     }
-                    keg["pour_id"] = db.create_pour(pour)
-                print("Pouring")
+                    new_pour_id = db.create_pour(pour)
+                    print("Creating new pour with id: ", new_pour_id)
+                    print(pour)
+                    keg["pour_id"] = new_pour_id
+                else:
+                    print("Updating pour with id: ", pour_id)
+                    print("New value: ", meter.thisPour)
+                    db.update_pour(pour_id, round(meter.thisPour, 2))
             else:
                 print("Pour finished: ", meter.thisPour, " liters")
+                if pour_id is not None:
+                    db.finish_pour(pour_id)
+                    keg["pour_id"] = None
                 meter.resetPour()
     continue

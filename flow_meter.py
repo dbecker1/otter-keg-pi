@@ -2,7 +2,9 @@ import time
 import random
 import RPi.GPIO as GPIO
 
-
+# METER_CONSTANT = 7.5
+# METER_CONSTANT = 98
+METER_CONSTANT = 75
 class FlowMeter():
   SECONDS_IN_A_MINUTE = 60
   MS_IN_A_SECOND = 1000.0
@@ -22,7 +24,7 @@ class FlowMeter():
     self.lastClick = int(time.time() * FlowMeter.MS_IN_A_SECOND)
     self.clickDelta = 0
     self.hertz = 0.0
-    self.flow = 0.0
+    self.flowRate = 0.0
     self.thisPour = 0.0
     self.totalPour = 0.0
     self.enabled = True
@@ -46,8 +48,8 @@ class FlowMeter():
     # calculate the instantaneous speed
     if (self.enabled == True and self.clickDelta < 1000):
       self.hertz = FlowMeter.MS_IN_A_SECOND / self.clickDelta
-      self.flow = self.hertz / (FlowMeter.SECONDS_IN_A_MINUTE * 7.5)  # In Liters per second
-      instPour = self.flow * (self.clickDelta / FlowMeter.MS_IN_A_SECOND)  
+      self.flowRate = self.hertz / (FlowMeter.SECONDS_IN_A_MINUTE * METER_CONSTANT)  # In Liters per second
+      instPour = self.flowRate * (self.clickDelta / FlowMeter.MS_IN_A_SECOND)  
       self.thisPour += instPour
       self.totalPour += instPour
     # Update the last click
@@ -60,7 +62,7 @@ class FlowMeter():
     return str(round(self.hertz,3)) + ' Hz'
   
   def getFormattedFlow(self):
-    return str(round(self.flow,3)) + ' L/s'
+    return str(round(self.flowRate,3)) + ' L/s'
   
   def getFormattedThisPour(self):
     return str(round(self.thisPour,3)) + ' L'

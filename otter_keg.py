@@ -55,11 +55,11 @@ def init_kegs():
 init_kegs()
 
 while True:
-    currentTime = int(time.time() * FlowMeter.MS_IN_A_SECOND)
+    currentTime = int(time.time() * 1000)
 
     for keg in kegs:
         meter = keg["meter"]
-        if meter.thisPour >= .02:
+        if meter.pourVolume >= .005:
             pour_id = keg["pour_id"]
             if currentTime - meter.lastClick < 2000:
                 if pour_id is None:
@@ -67,7 +67,7 @@ while True:
                         "keg_id": keg["id"],
                         "drinker_id": db.get_active_drinker()["id"],
                         "isCurrent": True,
-                        "amount": round(meter.thisPour, 2),
+                        "amount": round(meter.pourVolume, 2),
                         "start": str(datetime.datetime.now().isoformat()),
                         "last_update": str(datetime.datetime.now().isoformat())
                     }
@@ -75,10 +75,10 @@ while True:
                     logger.info("Creating new pour with id: {}. {}".format(pour_id, json.dumps(pour)))
                     keg["pour_id"] = new_pour_id
                 else:
-                    logger.info("Updating pour with id: {}. New Amount: {}".format(pour_id, str(meter.thisPour)))
-                    db.update_pour(pour_id, round(meter.thisPour, 2))
+                    logger.info("Updating pour with id: {}. Pour Amount: {}, Tick Count: {}".format(pour_id, str(meter.pourVolume),  str(meter.pourClicks)))
+                    db.update_pour(pour_id, round(meter.pourVolume, 2))
             else:
-                logger.info("Pour finished: {} liters".format(meter.thisPour))
+                logger.info("Pour finished: {} liters".format(meter.pourVolume))
                 if pour_id is not None:
                     db.finish_pour(pour_id)
                     keg["pour_id"] = None

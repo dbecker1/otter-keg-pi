@@ -76,7 +76,7 @@ class Database():
     def update_pour(self, pour_id, new_value):
         db.reference("pours/" + pour_id).update({
             "amount": new_value,
-            "last_update": str(datetime.datetime.now().isoformat())
+            "lastUpdate": str(datetime.datetime.now().isoformat())
         })
 
     def finish_pour(self, pour_id):

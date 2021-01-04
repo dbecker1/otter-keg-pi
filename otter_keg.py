@@ -9,7 +9,7 @@ from flow_meter import *
 from database import *
 
 log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
-log_file = "/tmp/logs/otter_keg.log"
+log_file = "/tmp/otter_keg.log"
 
 # File log handler
 # log_handler = RotatingFileHandler(log_file, mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)

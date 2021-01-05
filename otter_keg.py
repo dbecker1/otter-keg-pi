@@ -41,7 +41,7 @@ def init_kegs():
             "id": rawKeg["id"],
             "position": rawKeg["position"],
             "pin": db.config[rawKeg["position"] + "Pin"],
-            "pour_id": None
+            "pourId": None
         }
         pin_key = rawKeg["position"] + "Pin"
         if pin_key in db.config:
@@ -60,7 +60,7 @@ while True:
     for keg in kegs:
         meter = keg["meter"]
         if meter.pourVolume >= .005:
-            pour_id = keg["pour_id"]
+            pour_id = keg["pourId"]
             if currentTime - meter.lastClick < 2000:
                 if pour_id is None:
                     pour = {

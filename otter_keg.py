@@ -12,9 +12,9 @@ log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(line
 log_file = "/tmp/otter_keg.log"
 
 # File log handler
-# log_handler = RotatingFileHandler(log_file, mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
+log_handler = RotatingFileHandler(log_file, mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
 # Command line log handler
-log_handler = logging.StreamHandler()
+# log_handler = logging.StreamHandler()
 log_handler.setFormatter(log_formatter)
 log_handler.setLevel(logging.INFO)
 logger = logging.getLogger('root')

@@ -1,0 +1,13 @@
+[Unit]
+Description=Otter Keg Sensor Reader
+After=network.target network-online.target multi-user.target
+
+[Service]
+Type=simple
+Environment=GOOGLE_APPLICATION_CREDENTIALS=/home/pi/develop/otter-keg-pi/otter-keg-service-account.json
+ExecStart=/home/pi/develop/otter-keg-pi/start_otterkeg_sensor.sh
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

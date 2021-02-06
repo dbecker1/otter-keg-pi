@@ -2,7 +2,7 @@ import time
 import random
 import RPi.GPIO as GPIO
 
-LITERS_PER_PULSE = .00023
+LITERS_PER_PULSE = .00168
 
 class FlowMeter():
   enabled = True

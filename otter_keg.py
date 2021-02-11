@@ -59,7 +59,7 @@ while True:
 
     for keg in kegs:
         meter = keg["meter"]
-        if meter.pourVolume >= .005:
+        if meter.pourVolume >= .01:
             pour_id = keg["pourId"]
             if currentTime - meter.lastClick < 2000:
                 if pour_id is None:

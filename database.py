@@ -3,6 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import os
 import datetime
+import sys
 
 class Database():
     drinkers = []
@@ -83,4 +84,7 @@ class Database():
         db.reference("pours/" + pour_id).update({"isCurrent": False})
 
     def delete_pour(self, pour_id):
-        db.reference("pours/" + pour_id).remove()
+        try:
+            db.reference("pours/" + pour_id).remove()
+        except:
+            self.logger.error("Unable to delete pour: {}".format(str(sys.exc_info()[0])))

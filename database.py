@@ -81,3 +81,6 @@ class Database():
 
     def finish_pour(self, pour_id):
         db.reference("pours/" + pour_id).update({"isCurrent": False})
+
+    def delete_pour(self, pour_id):
+        db.reference("pours/" + pour_id).remove()

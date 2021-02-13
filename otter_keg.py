@@ -81,6 +81,9 @@ while True:
                 logger.info("Pour finished: {} liters".format(meter.pourVolume))
                 if pour_id is not None:
                     db.finish_pour(pour_id)
+                    if meter.pourVolume < .05:
+                        logger.info("Deleting pour. Amount too small.")
+                        db.delete_pour(pour_id)
                     keg["pourId"] = None
                 meter.resetPour()
     continue
